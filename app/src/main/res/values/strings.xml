@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">MasCotas</string>
+    <string name="titulologin">INGRESO</string>
+    <string name="tituloRegistro">REGISTRO</string>
+    <string name="email">Email</string>
+    <string name="ingresar">Ingresar</string>
+    <string name="registro">Registrarse</string>
+    <string name="contraseña">Contraseña</string>
+    <string name="recuperarContraseña">¿Olvido su Contraseña?</string>
+    <string name="noestaRegistrado">¿Aun no esta Registrado?</string>
+    <string name="yaTieneCuenta">¿Ya esta Registrado?</string>
+    <string name="toast1">Debe completar todos los campos</string>
+    <string name="toast2">Inicio de sesion exitoso</string>
+    <string name="toast3">No se pudo iniciar sesion correctamente</string>
+    <string name="toast15">Se envio un mail para reestablecer contraseña</string>
+    <string name="toast16">Se envio un mail para reestablecer contraseña</string>
+    <string name="toast17">Error, no se puede reestablecer</string>
+    <string name="espere_por_favor">Espere un momento por favor</string>
+
+
+
+</resources>
