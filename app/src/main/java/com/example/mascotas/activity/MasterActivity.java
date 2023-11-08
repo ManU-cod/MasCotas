@@ -1,15 +1,24 @@
 package com.example.mascotas.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.mascotas.R;
+import com.example.mascotas.adapter.EventAdapter;
+import com.example.mascotas.model.Event;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-
-import com.example.mascotas.R;
+import java.util.ArrayList;
 
 public class MasterActivity extends AppCompatActivity {
     private ListView eventListView;
@@ -41,7 +50,7 @@ public class MasterActivity extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                         Event selectedEvent = events.get(position);
                         Intent intent = new Intent(MasterActivity.this, DetailActivity.class);
-                        intent.putExtra("event", selectedEvent);
+                        intent.putExtra("event", (CharSequence) selectedEvent);
                         startActivity(intent);
                     }
                 });

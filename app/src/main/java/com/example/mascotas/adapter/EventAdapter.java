@@ -1,7 +1,5 @@
 package com.example.mascotas.adapter;
 
-import static java.security.AccessController.getContext;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +26,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
         Event event = getItem(position);
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.event_list_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.activity_master, parent, false);
         }
 
         TextView eventTitle = convertView.findViewById(R.id.eventTitle);
