@@ -11,35 +11,33 @@ import android.widget.Toast;
 
 import com.example.mascotas.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 
 public class MainActivity extends AppCompatActivity {
-    private Button botoncerrarSesion;
-    private TextView verMail;
-    private TextView verPass;
-
+    private Button button;
+    private TextView verMail,verPass;
     private FirebaseAuth auth;
 
-    protected void signOut(){
-        auth.signOut();
-    }
+    FirebaseUser user;
 
+    @Override
     protected void onStart() {
         super.onStart();
-        auth = FirebaseAuth.getInstance();
+
+        user = auth.getCurrentUser();
 
         verMail = (TextView) findViewById(R.id.showEmail);
         verPass = (TextView) findViewById(R.id.showPass);
-        botoncerrarSesion = (Button) findViewById(R.id.btnLogOut);
-
+        button = (Button) findViewById(R.id.btnLogOut);
         verMail.setText(auth.getCurrentUser().getEmail().toString());
-        verPass.setText(auth.getCurrentUser().getPhoneNumber());
+        verPass.setText(auth.getCurrentUser().getUid().toString());
 
-        botoncerrarSesion.setOnClickListener(new View.OnClickListener() {
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                signOut();
-                Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -49,13 +47,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-        verMail = (TextView) findViewById(R.id.showEmail);
-        verPass = (TextView) findViewById(R.id.showPass);
-        botoncerrarSesion = (Button) findViewById(R.id.btnLogOut);
-
         auth = FirebaseAuth.getInstance();
-
+        String user = auth.getCurrentUser().getEmail().toString();
+        if ("pipivr72@gmail.com".equals(user)){
+            startActivity(new Intent(MainActivity.this, Main_admin_Activity.class));
+            finish();
+        }
     }
 }
