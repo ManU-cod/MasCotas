@@ -35,7 +35,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private ProgressDialog dialog;
 
-    private void loginUsuario() {
+
+    private void loginUser() {
         auth.signInWithEmailAndPassword(mail, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -53,7 +54,8 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-    private void restablecerPassword() {
+
+    private void resetPassword() {
         auth.setLanguageCode("Reestablecer pass");
         auth.sendPasswordResetEmail(mail).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -94,7 +96,6 @@ public class LoginActivity extends AppCompatActivity {
         //Icono en el action bar
         //getSupportActionBar().setDisplayShowHomeEnabled(true);
         //getSupportActionBar().setIcon(R.mipmap.logo_icono_foreground);
-
         auth = FirebaseAuth.getInstance();
 
         //listener del boton registrarse
@@ -114,7 +115,7 @@ public class LoginActivity extends AppCompatActivity {
                 password= editTextPassword.getText().toString();
 
                 if (!mail.isEmpty() && !password.isEmpty()){
-                    loginUsuario();
+                    loginUser();
                 }else{
                     Toast.makeText(LoginActivity.this, R.string.toast1, Toast.LENGTH_LONG).show();
                 }
@@ -123,7 +124,6 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         //listener textview boton recuperar contaseña
-
         tv_recuperar_pass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
                     dialog.setMessage(getString( R.string.espere_por_favor));
                     dialog.setCanceledOnTouchOutside(false);
                     dialog.show();
-                    restablecerPassword();
+                    resetPassword();
                 }else {
                     Toast.makeText(LoginActivity.this, R.string.toast15, Toast.LENGTH_SHORT).show();
                     editTextMail.requestFocus();

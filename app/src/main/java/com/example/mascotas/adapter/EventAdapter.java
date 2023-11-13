@@ -37,7 +37,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
         eventTitle.setText(event.title);
         eventInfo.setText(event.information);
         eventCost.setText(event.cost);
-        eventCoordinates.setText(event.coordinates);
+        //eventCoordinates.setText(event.coordinates);
 
         return convertView;
     }
