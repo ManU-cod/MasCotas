@@ -90,7 +90,8 @@ public class Create_Event_Activity extends AppCompatActivity implements
         protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_create_event);
-                this.setTitle("Nuevo Evento");
+                this.setTitle("Evento");
+                getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.color));
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 initDatePicker();
 
@@ -296,7 +297,7 @@ public class Create_Event_Activity extends AppCompatActivity implements
               String eventCreator =  documentSnapshot.getString("creador");
               String eventDescription =  documentSnapshot.getString("descripcion");
               String eventFecha =  documentSnapshot.getString("fecha");
-              String eventHora = documentSnapshot.getString("hora");
+              String eventHora = documentSnapshot.getString("horario");
 
               String eventCost  = String.valueOf(documentSnapshot.getLong("costo"));
               String eventCapacity = String.valueOf(documentSnapshot.getLong("cupo"));
@@ -307,7 +308,9 @@ public class Create_Event_Activity extends AppCompatActivity implements
               fecha = eventFecha;
               horario =  eventHora;
 
+
               LatLng argentina = new LatLng(Double.parseDouble(txtLatitud), Double.parseDouble(txtLongitud) );
+              mMap.addMarker(new MarkerOptions().position(argentina).title(""));
               mMap.moveCamera(CameraUpdateFactory.newLatLng(argentina));
 
               dateButton.setText(eventFecha);
@@ -344,7 +347,9 @@ public class Create_Event_Activity extends AppCompatActivity implements
         @Override
         public boolean onSupportNavigateUp() {
                 onBackPressed();
-                return false;
+                Intent intent = new Intent(getApplicationContext(), Main_admin_Activity.class);
+                startActivity(intent);
+                return true;
         }
 
         @Override

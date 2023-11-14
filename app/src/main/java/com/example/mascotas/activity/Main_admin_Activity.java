@@ -1,6 +1,7 @@
 package com.example.mascotas.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,11 +35,10 @@ public class Main_admin_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_admin);
-
+        this.setTitle("Panel Admin");
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.color));
         mFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
-
-
         btn_add = findViewById(R.id.btn_add);
         btn_exit = findViewById(R.id.btn_close);
 
