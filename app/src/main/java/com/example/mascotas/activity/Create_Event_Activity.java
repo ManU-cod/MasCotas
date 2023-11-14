@@ -120,10 +120,17 @@ public class Create_Event_Activity extends AppCompatActivity implements
                 btn_cu_photo.setOnClickListener(view -> uploadPhoto());
 
                 btn_r_photo.setOnClickListener(view -> {
-                        HashMap<String, Object> map = new HashMap<>();
-                        map.put("photo", "");
-                        mfirestore.collection("pet").document(idd).update(map);
-                        Toast.makeText(Create_Event_Activity.this, "Foto eliminada", Toast.LENGTH_SHORT).show();
+                        if (id == null || id == ""){
+                                mfirestore.collection("Eventos").document(id).get().addOnSuccessListener(documentSnapshot -> {
+                                        String photoPet = documentSnapshot.getString("photo");
+                                        HashMap<String, Object> map = new HashMap<>();
+                                        map.put("photo", "");
+                                        mfirestore.collection("pet").document(idd).update(map);
+                                        Toast.makeText(Create_Event_Activity.this,
+                                                "Foto eliminada", Toast.LENGTH_SHORT).show();
+                                }).addOnFailureListener(e ->
+                                        Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show());
+                        }
                 });
 
                 if (id == null || id == ""){
