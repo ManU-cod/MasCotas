@@ -121,6 +121,8 @@ public class Create_Event_Activity extends AppCompatActivity implements
 
                 btn_r_photo.setOnClickListener(view -> {
                         if (id == null || id == ""){
+                                //linearLayout_image_btn.setVisibility(View.GONE);
+                        }else {
                                 mfirestore.collection("Eventos").document(id).get().addOnSuccessListener(documentSnapshot -> {
                                         String photoPet = documentSnapshot.getString("photo");
                                         HashMap<String, Object> map = new HashMap<>();
