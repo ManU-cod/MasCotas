@@ -6,4 +6,10 @@
     </style>
 
     <style name="Theme.MasCotas" parent="Base.Theme.MasCotas" />
+
+    <style name="AppTheme">
+
+        <item name="android:statusBarColor">#FF0000</item>
+
+    </style>
 </resources>

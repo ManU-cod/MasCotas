@@ -1,13 +1,13 @@
 package com.example.mascotas.model;
 
 public class Eventos {
-    public String creador,descripcion,estado,fecha,horario,latitud,longitud,titulo;
+    public String creador,descripcion,estado,fecha,horario,latitud,longitud,titulo,photo;
     public int inscriptos,costo,cupo;
 
     public Eventos(){}
     public Eventos(int costo, String creador, int cupo, String descripcion,
                    String estado, String fecha, String horario, int inscriptos,
-                   String latitud, String longitud, String titulo) {
+                   String latitud, String longitud, String titulo, String photo) {
         this.costo = costo;
         this.creador = creador;
         this.cupo = cupo;
@@ -19,6 +19,7 @@ public class Eventos {
         this.longitud = longitud;
         this.titulo = titulo;
         this.inscriptos = inscriptos;
+        this.photo = photo;
     }
     public void setCosto(int costo) {
         this.costo = costo;
@@ -88,4 +89,13 @@ public class Eventos {
     public String getTitulo() {
         return titulo;
     }
+
+   //********************************************************/////
+    public String getPhoto() {
+        return photo;
+    }
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
 }

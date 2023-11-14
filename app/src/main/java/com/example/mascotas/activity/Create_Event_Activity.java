@@ -1,6 +1,7 @@
 package com.example.mascotas.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -8,15 +9,21 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -29,9 +36,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -46,7 +59,8 @@ public class Create_Event_Activity extends AppCompatActivity implements
         EditText titulo,creador,descripcion,costo,cupo;
         Button timeButton,dateButton,btn_send;
         int hour, minute;
-        String txtLatitud,txtLongitud,fecha, horario;
+        int eventinscriptos = 0;
+        String txtLatitud,txtLongitud,fecha, horario, eventEstado;
         private DatePickerDialog datePickerDialog;
         GoogleMap mMap;
 
@@ -55,54 +69,175 @@ public class Create_Event_Activity extends AppCompatActivity implements
         private boolean permissionDenied = false;
         private FirebaseAuth mAuth;
 
+
+        ImageView photo_pet;
+        Button btn_cu_photo, btn_r_photo;
+        LinearLayout linearLayout_image_btn;
+        StorageReference storageReference;
+        String storage_path = "Eventos/*";
+
+        private static final int COD_SEL_STORAGE = 200;
+        private static final int COD_SEL_IMAGE = 300;
+
+        private Uri image_url;
+        String photo = "photo";
+        String idd;
+
+        String download_uri1;
+        ProgressDialog progressDialog;
+
         @Override
         protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_event);
-        this.setTitle("Nuevo Evento");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        initDatePicker();
+                super.onCreate(savedInstanceState);
+                setContentView(R.layout.activity_create_event);
+                this.setTitle("Nuevo Evento");
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                initDatePicker();
 
-        mfirestore = FirebaseFirestore.getInstance();
-        dateButton = findViewById(R.id.datePickerButton);
-        dateButton.setText(getTodaysDate());
-        timeButton = findViewById(R.id.timeButton);
-        titulo =  findViewById(R.id.titulo);
-        creador =  findViewById(R.id.creador);
-        descripcion = findViewById(R.id.descripcion);
-        costo = findViewById(R.id.costo);
-        cupo = findViewById(R.id.cupo);
-        btn_send = findViewById(R.id.button_send);
+                progressDialog = new ProgressDialog(this);
+                String id = getIntent().getStringExtra("id_Event");
+                mfirestore = FirebaseFirestore.getInstance();
+                mAuth = FirebaseAuth.getInstance();
+                storageReference = FirebaseStorage.getInstance().getReference();
+                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+                mapFragment.getMapAsync(this);
 
-        btn_send.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                String eventTitle = titulo.getText().toString().trim();
-                String eventCreator = creador.getText().toString().trim();
-                String eventDescription = descripcion.getText().toString().trim();
-                String eventCost = costo.getText().toString().trim();
-                String eventCapacity = cupo.getText().toString().trim();
+                linearLayout_image_btn = findViewById(R.id.images_btn);
+                dateButton = findViewById(R.id.datePickerButton);
+                dateButton.setText(getTodaysDate());
+                timeButton = findViewById(R.id.timeButton);
+                titulo =  findViewById(R.id.titulo);
+                creador =  findViewById(R.id.creador);
+                descripcion = findViewById(R.id.descripcion);
+                costo = findViewById(R.id.costo);
+                cupo = findViewById(R.id.cupo);
+                btn_send = findViewById(R.id.button_send);
+                photo_pet = findViewById(R.id.pet_photo);
+                btn_cu_photo = findViewById(R.id.btn_photo);
+                btn_r_photo = findViewById(R.id.btn_remove_photo);
+
+                btn_cu_photo.setOnClickListener(view -> uploadPhoto());
+
+                btn_r_photo.setOnClickListener(view -> {
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put("photo", "");
+                        mfirestore.collection("pet").document(idd).update(map);
+                        Toast.makeText(Create_Event_Activity.this, "Foto eliminada", Toast.LENGTH_SHORT).show();
+                });
+
+                if (id == null || id == ""){
+                       //linearLayout_image_btn.setVisibility(View.GONE);
+                }else{
+                        idd = id;
+                        btn_send.setText("Resubir");
+                        getEvent(id);
+                }
+                btn_send.setOnClickListener(view -> {
+                        String eventTitle = titulo.getText().toString().trim();
+                        String eventCreator = creador.getText().toString().trim();
+                        String eventDescription = descripcion.getText().toString().trim();
+                        String eventCost = costo.getText().toString().trim();
+                        String eventCapacity = cupo.getText().toString().trim();
 
                         if (TextUtils.isEmpty(eventTitle) || TextUtils.isEmpty(eventCreator) ||
                                 TextUtils.isEmpty(eventDescription) || TextUtils.isEmpty(eventCapacity)
                                 || TextUtils.isEmpty(eventCost) || TextUtils.isEmpty(txtLatitud) || TextUtils.isEmpty(fecha) ) {
                                 // If any field is empty, show a Toast message
                                 Toast.makeText(Create_Event_Activity.this,
-                                "Por favor rellena todos los campos", Toast.LENGTH_SHORT).show();
+                                        "Por favor rellena todos los campos", Toast.LENGTH_SHORT).show();
                         } else {
-                                postEvent(eventTitle, eventCreator, eventDescription);
+                                if (id == null || id == "") {
+                                        // Publicar nuevo evento
+                                        postEvent(eventTitle, eventCreator, eventDescription);
+                                } else {
+                                        // Actualizar evento existente
+                                        updatePet(eventTitle, eventCreator, eventDescription, id);
+                                }
                         }
-                }
-        });
+                });
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
         }
 
-        private void  postEvent(String eventTitle,String eventCreator,String eventDescription) {
+
+        private void uploadPhoto() {
+                Intent i = new Intent(Intent.ACTION_PICK);
+                i.setType("image/*");
+                startActivityForResult(i, COD_SEL_IMAGE);
+        }
+
+        @Override
+        protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+                super.onActivityResult(requestCode, resultCode, data);
+                if(resultCode == RESULT_OK){
+                        if (requestCode == COD_SEL_IMAGE){
+                                image_url = data.getData();
+                                subirPhoto(image_url);
+                        }
+                }
+
+        }
+
+        private void subirPhoto(Uri image_url) {
+
+                if (idd == null || idd == ""){
+                        progressDialog.setMessage("Actualizando foto");
+                        progressDialog.show();
+                        String rute_storage_photo = storage_path + "" + photo + "" + mAuth.getUid() +""+ idd;
+                        StorageReference reference = storageReference.child(rute_storage_photo);
+                        reference.putFile(image_url).addOnSuccessListener(taskSnapshot -> {
+                                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                                while (!uriTask.isSuccessful());
+                                if (uriTask.isSuccessful()){
+                                        uriTask.addOnSuccessListener(uri -> {
+                                                download_uri1 = uri.toString();
+                                                Picasso.with(getApplicationContext())
+                                                        .load(download_uri1)
+                                                        .resize(150, 150)
+                                                        .into(photo_pet);
+                                                Toast.makeText(Create_Event_Activity.this, "Foto actualizada", Toast.LENGTH_SHORT).show();
+                                                progressDialog.dismiss();
+                                        });
+                                }
+                        }).addOnFailureListener(e -> Toast.makeText(Create_Event_Activity.this,
+                                "Error al cargar foto", Toast.LENGTH_SHORT).show());
+                }else{
+                        progressDialog.setMessage("Actualizando foto");
+                        progressDialog.show();
+                        String rute_storage_photo = storage_path + "" + photo + "" + mAuth.getUid() +""+ idd;
+                        StorageReference reference = storageReference.child(rute_storage_photo);
+                        reference.putFile(image_url).addOnSuccessListener(taskSnapshot -> {
+                                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                                while (!uriTask.isSuccessful());
+                                if (uriTask.isSuccessful()){
+                                        uriTask.addOnSuccessListener(uri -> {
+                                                String download_uri = uri.toString();
+                                                Picasso.with(getApplicationContext())
+                                                        .load(download_uri)
+                                                        .resize(150, 150)
+                                                        .into(photo_pet);
+                                                HashMap<String, Object> map = new HashMap<>();
+                                                map.put("photo", download_uri);
+                                                mfirestore.collection("Eventos").document(idd).update(map);
+                                                Toast.makeText(Create_Event_Activity.this, "Foto actualizada", Toast.LENGTH_SHORT).show();
+                                                progressDialog.dismiss();
+                                        });
+                                }
+                        }).addOnFailureListener(e -> Toast.makeText(Create_Event_Activity.this,
+                                "Error al cargar foto", Toast.LENGTH_SHORT).show());
+                }
+
+        }
+
+
+
+
+
+
+
+
+        private void  updatePet(String eventTitle,String eventCreator,String eventDescription, String id) {
                 int eventCost = Integer.parseInt(costo.getText().toString());
                 int eventCupo = Integer.parseInt(cupo.getText().toString());
-                int eventinscriptos = 0;
 
                 Map<String, Object> map = new HashMap<>();
                 map.put("titulo", eventTitle);
@@ -117,23 +252,94 @@ public class Create_Event_Activity extends AppCompatActivity implements
                 map.put("inscriptos", eventinscriptos );
                 map.put("estado", "activo");
 
-                mfirestore.collection("Eventos").add(map).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                @Override
-                public void onSuccess(DocumentReference documentReference) {
-                        Toast.makeText(getApplicationContext(), "Creado exitosamente",
-                        Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(Create_Event_Activity.this,
-                        Main_admin_Activity.class);
+                mfirestore.collection("Eventos").document(id).update(map).addOnSuccessListener(unused -> {
+                        Toast.makeText(getApplicationContext(), "Actualizado exitosamente", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(Create_Event_Activity.this, Main_admin_Activity.class);
                         startActivity(intent);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(),
-                        "Error al ingresar", Toast.LENGTH_SHORT).show();
-                        }
-                });
+                }).addOnFailureListener(e ->
+                        Toast.makeText(getApplicationContext(), "Error al actualizar", Toast.LENGTH_SHORT).show());
         }
+
+        private void  postEvent(String eventTitle,String eventCreator,String eventDescription) {
+                //String idUser = mAuth.getCurrentUser().getUid();
+                DocumentReference id = mfirestore.collection("Eventos").document();
+                int eventCost = Integer.parseInt(costo.getText().toString());
+                int eventCupo = Integer.parseInt(cupo.getText().toString());
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("id", id.getId());
+                map.put("titulo", eventTitle);
+                map.put("creador", eventCreator);
+                map.put("fecha", fecha);
+                map.put("horario", horario);
+                map.put("latitud", txtLatitud);
+                map.put("longitud", txtLongitud);
+                map.put("descripcion", eventDescription);
+                map.put("cupo",  eventCupo);
+                map.put("costo", eventCost);
+                map.put("inscriptos", eventinscriptos );
+                map.put("estado", "activo");
+                map.put("photo", download_uri1);
+
+                mfirestore.collection("Eventos").document(id.getId()).set(map).addOnSuccessListener(documentReference -> {
+                        Toast.makeText(getApplicationContext(), "Creado exitosamente", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(Create_Event_Activity.this, Main_admin_Activity.class);
+                        startActivity(intent);
+                }).addOnFailureListener(e ->
+                        Toast.makeText(getApplicationContext(), "Error al ingresar", Toast.LENGTH_SHORT).show());
+        }
+
+        private void getEvent(String id){
+           mfirestore.collection("Eventos").document(id).get().addOnSuccessListener(documentSnapshot -> {
+              String photoPet = documentSnapshot.getString("photo");
+              String eventTitle = documentSnapshot.getString("titulo");
+              String eventCreator =  documentSnapshot.getString("creador");
+              String eventDescription =  documentSnapshot.getString("descripcion");
+              String eventFecha =  documentSnapshot.getString("fecha");
+              String eventHora = documentSnapshot.getString("hora");
+
+              String eventCost  = String.valueOf(documentSnapshot.getLong("costo"));
+              String eventCapacity = String.valueOf(documentSnapshot.getLong("cupo"));
+              eventinscriptos = Integer.parseInt(String.valueOf(documentSnapshot.getLong("inscriptos")));
+              txtLatitud = documentSnapshot.getString("latitud");
+              txtLongitud = documentSnapshot.getString("longitud");
+              eventEstado = documentSnapshot.getString("estado");
+              fecha = eventFecha;
+              horario =  eventHora;
+
+              LatLng argentina = new LatLng(Double.parseDouble(txtLatitud), Double.parseDouble(txtLongitud) );
+              mMap.moveCamera(CameraUpdateFactory.newLatLng(argentina));
+
+              dateButton.setText(eventFecha);
+              timeButton.setText(eventHora);
+              titulo.setText(eventTitle);
+              creador.setText(eventCreator);
+              descripcion.setText(eventDescription);
+              costo.setText(eventCost);
+              cupo.setText(eventCapacity);
+                   try {
+                           if(!photoPet.equals("")){
+                                   Toast toast = Toast.makeText(getApplicationContext(), "Cargando foto", Toast.LENGTH_SHORT);
+                                   toast.setGravity(Gravity.TOP,0,200);
+                                   toast.show();
+                                   Picasso.with(Create_Event_Activity.this)
+                                           .load(photoPet)
+                                           .resize(150, 150)
+                                           .into(photo_pet);
+                           }
+                   }catch (Exception e){
+                           Log.v("Error", "e: " + e);
+                   }
+
+
+           }).addOnFailureListener(e ->
+                  Toast.makeText(getApplicationContext(), "Error al obtener los datos", Toast.LENGTH_SHORT).show());
+        }
+
+
+
+
+
 
         @Override
         public boolean onSupportNavigateUp() {
@@ -271,33 +477,32 @@ public class Create_Event_Activity extends AppCompatActivity implements
         }
 
         private String getMonthFormat(int month) {
-                if(month == 1)
+           if(month == 1)
                 return "JAN";
-                if(month == 2)
+           if(month == 2)
                 return "FEB";
-                if(month == 3)
+           if(month == 3)
                 return "MAR";
-                if(month == 4)
+           if(month == 4)
                 return "APR";
-                if(month == 5)
+           if(month == 5)
                 return "MAY";
-                if(month == 6)
+           if(month == 6)
                 return "JUN";
-                if(month == 7)
+           if(month == 7)
                 return "JUL";
-                if(month == 8)
+           if(month == 8)
                 return "AUG";
-                if(month == 9)
+           if(month == 9)
                 return "SEP";
-                if(month == 10)
+           if(month == 10)
                 return "OCT";
-                if(month == 11)
+           if(month == 11)
                 return "NOV";
-                if(month == 12)
+           if(month == 12)
                 return "DEC";
-
                 //default should never happen
-                return "JAN";
+           return "JAN";
         }
 
         public void openDatePicker(View view) {

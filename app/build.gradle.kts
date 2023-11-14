@@ -54,4 +54,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:22.2.0")
     implementation ("com.firebaseui:firebase-ui-firestore:8.0.2")
 
+    implementation ("com.google.firebase:firebase-storage:20.0.0")
+    implementation ("com.squareup.picasso:picasso:2.5.2")
+
 }

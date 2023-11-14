@@ -4,8 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.SearchView;
 
@@ -19,7 +21,7 @@ import com.google.firebase.firestore.Query;
 
 public class Main_admin_Activity extends AppCompatActivity {
 
-    Button btn_add;
+    Button btn_add,btn_exit;
     EventAdapter mAdapter;
     RecyclerView mRecycler;
     FirebaseFirestore mFirestore;
@@ -28,25 +30,64 @@ public class Main_admin_Activity extends AppCompatActivity {
     Query query;
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_admin);
 
         mFirestore = FirebaseFirestore.getInstance();
-        mRecycler = findViewById(R.id.recyclerViewSingle);
-        mRecycler.setLayoutManager(new LinearLayoutManager(this));
-        query = mFirestore.collection("Eventos");
-        FirestoreRecyclerOptions<Eventos> firestoreRecyclerOptions = new FirestoreRecyclerOptions.Builder<Eventos>().setQuery(query, Eventos.class).build();
+        mAuth = FirebaseAuth.getInstance();
 
-        mAdapter = new EventAdapter (firestoreRecyclerOptions) ;
-        mAdapter.notifyDataSetChanged();
-        mRecycler.setAdapter(mAdapter);
 
         btn_add = findViewById(R.id.btn_add);
+        btn_exit = findViewById(R.id.btn_close);
+
         btn_add.setOnClickListener(v -> {
             Intent intent = new Intent(Main_admin_Activity.this, Create_Event_Activity.class);
             startActivity(intent);
         });
+        btn_exit.setOnClickListener(view -> {
+            mAuth.signOut();
+            finish();
+            startActivity(new Intent(Main_admin_Activity.this, LoginActivity.class));
+        });
+
+        setUpRecyclerView();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void setUpRecyclerView() {
+        mRecycler = findViewById(R.id.recyclerViewSingle);
+        mRecycler.setLayoutManager(new LinearLayoutManager(this));
+        query = mFirestore.collection("Eventos");
+        FirestoreRecyclerOptions<Eventos> firestoreRecyclerOptions =
+                new FirestoreRecyclerOptions.Builder<Eventos>().setQuery(query, Eventos.class).build();
+        mAdapter = new EventAdapter(firestoreRecyclerOptions, this);
+        mAdapter.notifyDataSetChanged();
+        mRecycler.setAdapter(mAdapter);
+    }
+    private void search_view() {
+        search_view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                textSearch(s);
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String s) {
+                textSearch(s);
+                return false;
+            }
+        });
+    }
+    public void textSearch(String s){
+        FirestoreRecyclerOptions<Eventos> firestoreRecyclerOptions =
+                new FirestoreRecyclerOptions.Builder<Eventos>()
+                        .setQuery(query.orderBy("name")
+                                .startAt(s).endAt(s+"~"), Eventos.class).build();
+        mAdapter = new EventAdapter(firestoreRecyclerOptions, this);
+        mAdapter.startListening();
+        mRecycler.setAdapter(mAdapter);
     }
 
     @Override
