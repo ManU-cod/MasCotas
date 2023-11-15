@@ -10,7 +10,11 @@ public class Event {
     public Double latitude;
     public Date date;
 
-    // Constructor, getters y setters
+    public Event() {
+
+    }
+
+// Constructor, getters y setters
 
     public void setTitle(String title) {
         this.title = title;

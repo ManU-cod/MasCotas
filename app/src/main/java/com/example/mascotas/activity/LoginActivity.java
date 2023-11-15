@@ -17,9 +17,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 public class LoginActivity extends AppCompatActivity {
+
 
     private EditText editTextPassword;
     private EditText editTextMail;
@@ -30,11 +33,45 @@ public class LoginActivity extends AppCompatActivity {
     //variables para ingresar sesion
     private String password;
     private String mail;
-
     private FirebaseAuth auth;
+    FirebaseFirestore db;
+    DocumentReference userRef;
 
-    private ProgressDialog dialog;
+    private void checkUserRole(String userId) {
 
+        db = FirebaseFirestore.getInstance();
+        userRef = db.collection("usuario").document(userId);
+
+        userRef.get().addOnSuccessListener(documentSnapshot -> {
+
+            if (documentSnapshot.exists()) {
+                // El documento del usuario existe
+                String userRole = documentSnapshot.getString("rol");
+
+                if ("Admin".equals(userRole)) {
+
+                    // El usuario tiene rol de administrador
+                    // Abrir el activity de administrador (AdminActivity, por ejemplo)
+                    Intent adminIntent = new Intent(LoginActivity.this, Main_admin_Activity.class);
+                    startActivity(adminIntent);
+
+
+                } else {
+                    // El usuario no tiene rol de administrador
+                    // Abrir el activity principal (MasterActivity)
+                    Intent mainIntent = new Intent(LoginActivity.this, MainUserActivity.class);
+                    startActivity(mainIntent);
+
+                }
+                finish();
+            } else {
+                // El documento del usuario no existe
+                // Manejar el caso según sea necesario
+            }
+        }).addOnFailureListener(e -> {
+            // Manejar errores al obtener datos de Firestore
+        });
+    }
 
     private void loginUser() {
         auth.signInWithEmailAndPassword(mail, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -44,11 +81,14 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, R.string.toast2, Toast.LENGTH_LONG).show();
                     //aca guardar en shared preference los datos si el checkbox esta chequeado
 
+                    checkUserRole(auth.getCurrentUser().getEmail());
+
                     //abrir el activity con la lista de eventos (MainActivity)
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                }else{
+                    //Intent intent = new Intent(LoginActivity.this, MasterActivity.class);
+                    //startActivity(intent);
+                    //finish();
+                }
+                else{
                     Toast.makeText(LoginActivity.this, R.string.toast3, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -65,19 +105,22 @@ public class LoginActivity extends AppCompatActivity {
                 }else {
                     Toast.makeText(LoginActivity.this, R.string.toast17, Toast.LENGTH_SHORT).show();
                 }
-                dialog.dismiss();
+                //dialog.dismiss();
             }
         });
     }
 
+    @Override
     protected void onStart() {
         super.onStart();
+
         if (auth.getCurrentUser() != null){
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-            finish();
+
+            checkUserRole(auth.getCurrentUser().getEmail());
+
+        }else {
         }
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,55 +131,42 @@ public class LoginActivity extends AppCompatActivity {
         btn_ingresar = (Button) findViewById(R.id.botonIngresar);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         editTextMail = (EditText) findViewById(R.id.editTextEmail);
-
         tv_recuperar_pass = findViewById(R.id.textViewRecuperarContraseña);
 
-        dialog = new ProgressDialog(this);
-
-        //Icono en el action bar
-        //getSupportActionBar().setDisplayShowHomeEnabled(true);
-        //getSupportActionBar().setIcon(R.mipmap.logo_icono_foreground);
         auth = FirebaseAuth.getInstance();
 
-        //listener del boton registrarse
-        btn_registrarse.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
+
+        btn_registrarse.setOnClickListener(v -> {
+            //listener del boton registrarse
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        });
+
+
+        btn_ingresar.setOnClickListener(v -> {
+            //listener del boton ingresar
+            mail = editTextMail.getText().toString();
+            password = editTextPassword.getText().toString();
+
+            if (!mail.isEmpty() && !password.isEmpty()){
+                loginUser();
+            }else{
+                Toast.makeText(LoginActivity.this, R.string.toast1, Toast.LENGTH_LONG).show();
             }
         });
 
-        //listener del boton ingresar
-        btn_ingresar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mail= editTextMail.getText().toString();
-                password= editTextPassword.getText().toString();
 
-                if (!mail.isEmpty() && !password.isEmpty()){
-                    loginUser();
-                }else{
-                    Toast.makeText(LoginActivity.this, R.string.toast1, Toast.LENGTH_LONG).show();
-                }
-            }
-
-        });
-
-        //listener textview boton recuperar contaseña
-        tv_recuperar_pass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mail= editTextMail.getText().toString();
-                if (!mail.isEmpty()){
-                    dialog.setMessage(getString( R.string.espere_por_favor));
-                    dialog.setCanceledOnTouchOutside(false);
-                    dialog.show();
-                    resetPassword();
-                }else {
-                    Toast.makeText(LoginActivity.this, R.string.toast15, Toast.LENGTH_SHORT).show();
-                    editTextMail.requestFocus();
-                }
+        tv_recuperar_pass.setOnClickListener(v -> {
+            //listener textview boton recuperar contaseña
+            mail= editTextMail.getText().toString();
+            if (!mail.isEmpty()){
+                //dialog.setMessage(getString( R.string.espere_por_favor));
+                //dialog.setCanceledOnTouchOutside(false);
+                //dialog.show();
+                resetPassword();
+            }else {
+                Toast.makeText(LoginActivity.this, R.string.toast15, Toast.LENGTH_SHORT).show();
+                editTextMail.requestFocus();
             }
         });
 
