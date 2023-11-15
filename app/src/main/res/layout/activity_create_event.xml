@@ -39,7 +39,9 @@
                     android:id="@+id/pet_photo"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@android:drawable/sym_def_app_icon" />
+                    android:backgroundTint="@color/azul"
+                    app:srcCompat="@drawable/ic_image" />
+
             </androidx.cardview.widget.CardView>
 
             <LinearLayout
@@ -54,7 +56,8 @@
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/azul"
                     android:drawableLeft="@drawable/ic_edit"
-                    android:text="Photo" />
+                    android:text="Foto"
+                    android:textSize="16sp"/>
 
                 <Space
                     android:layout_width="10dp"
@@ -66,7 +69,8 @@
                     android:layout_height="wrap_content"
                     android:backgroundTint="#F82828"
                     android:drawableLeft="@drawable/ic_delete"
-                    android:text="DELETE" />
+                    android:text="Borar"
+                    android:textSize="16dp"/>
 
             </LinearLayout>
         </LinearLayout>
@@ -76,7 +80,7 @@
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="15dp"
             android:text="@string/Titulo"
             android:textColor="@color/black"
             android:textSize="20sp" />
@@ -86,12 +90,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="15dp"
             android:text="@string/Creador"
             android:textColor="@color/black"
             android:textSize="20sp" />
@@ -101,13 +105,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/textView4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="15dp"
             android:text="@string/Fecha"
             android:textColor="@color/black"
             android:textSize="20sp" />
@@ -129,7 +133,7 @@
             android:id="@+id/textView10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="15dp"
             android:text="@string/Hora"
             android:textColor="@color/black"
             android:textSize="20sp" />
@@ -151,7 +155,7 @@
             android:id="@+id/textView5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="15dp"
             android:text="@string/Descripcion"
             android:textColor="@color/black"
             android:textSize="20sp" />
@@ -164,12 +168,13 @@
             android:inputType="textMultiLine"
             android:scrollbars="vertical"
             android:textColor="@color/black"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/textView6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:text="@string/Localizacion"
             android:textColor="@color/black"
             android:textSize="20sp" />
@@ -178,7 +183,7 @@
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="450dp"
+            android:layout_height="350dp"
             android:layout_marginStart="5dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="5dp"
@@ -193,7 +198,7 @@
             android:id="@+id/textView7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="15dp"
             android:text="@string/Cupo"
             android:textColor="@color/black"
             android:textSize="20sp" />
@@ -203,14 +208,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:textSize="25sp"
+            android:textSize="20sp"
             android:inputType="numberDecimal" />
 
         <TextView
             android:id="@+id/textView9"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="15dp"
             android:text="@string/Costo"
             android:textSize="20sp"
             android:textColor="@color/black" />
@@ -220,18 +225,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:textSize="25sp"
+            android:textSize="20sp"
             android:inputType="numberDecimal"/>
 
         <Button
             android:id="@+id/button_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:layout_marginBottom="35sp"
             android:backgroundTint="@color/color"
             android:text="Enviar"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
 
     </LinearLayout>
 
