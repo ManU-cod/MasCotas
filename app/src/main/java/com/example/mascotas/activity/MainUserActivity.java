@@ -1,16 +1,16 @@
 package com.example.mascotas.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SearchView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mascotas.R;
 import com.example.mascotas.adapter.EventAdapter;
@@ -20,7 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-public class Main_admin_Activity extends AppCompatActivity {
+public class MainUserActivity extends AppCompatActivity {
 
     Button btn_add,btn_exit;
     EventAdapter mAdapter;
@@ -36,22 +36,26 @@ public class Main_admin_Activity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_admin);
-        this.setTitle("Panel Admin");
+        this.setTitle("Panel User");
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.color));
         mFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         btn_add = findViewById(R.id.btn_add);
         btn_exit = findViewById(R.id.btn_close);
 
+        btn_add.setVisibility(View.GONE);
+        btn_exit.setWidth(400);
+        btn_exit.setGravity(View.TEXT_ALIGNMENT_CENTER);
+
         btn_add.setOnClickListener(v -> {
-            Intent intent = new Intent(Main_admin_Activity.this, Create_Event_Activity.class);
+            Intent intent = new Intent(MainUserActivity.this, Create_Event_Activity.class);
             startActivity(intent);
         });
 
         btn_exit.setOnClickListener(view -> {
             mAuth.signOut();
             finish();
-            startActivity(new Intent(Main_admin_Activity.this, LoginActivity.class));
+            startActivity(new Intent(MainUserActivity.this, LoginActivity.class));
         });
 
         setUpRecyclerView();

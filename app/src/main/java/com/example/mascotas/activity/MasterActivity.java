@@ -70,6 +70,7 @@ public class MasterActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         eventListener = eventRef.addSnapshotListener((queryDocumentSnapshots, e) -> {
+
             if (e != null) {
                 Toast.makeText(MasterActivity.this, "Error al obtener eventos", Toast.LENGTH_SHORT).show();
             }

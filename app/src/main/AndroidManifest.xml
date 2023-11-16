@@ -17,29 +17,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Material3.Light"
         tools:targetApi="31">
-        <activity
-            android:name=".activity.Create_Event_Activity"
-            android:exported="false" />
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyC_mMiNrIomyEFuxC4RQ2z4bOAWo5vF5fU" />
-        <activity
-            android:name=".activity.Main_admin_Activity"
-            android:exported="false" />
+
         <activity
             android:name=".activity.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.Material3.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
         <activity
             android:name=".activity.RegisterActivity"
             android:exported="true"
@@ -48,6 +39,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
         <activity
             android:name=".activity.LoginActivity"
             android:exported="true"
@@ -56,13 +48,35 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".activity.MainUserActivity"
             android:exported="true">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
+        <activity
+            android:name=".activity.MasterActivity"
+            android:exported="true">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+
+        <activity
+            android:name=".activity.Main_admin_Activity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activity.Create_Event_Activity"
+            android:exported="false" >
+            <meta-data
+                android:name="com.google.android.geo.API_KEY"
+                android:value="AIzaSyC_mMiNrIomyEFuxC4RQ2z4bOAWo5vF5fU" />
+        </activity>
+
     </application>
 
 </manifest>
