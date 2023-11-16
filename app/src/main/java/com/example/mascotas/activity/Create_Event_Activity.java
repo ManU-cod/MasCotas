@@ -120,19 +120,35 @@ public class Create_Event_Activity extends AppCompatActivity implements
                 btn_cu_photo.setOnClickListener(view -> uploadPhoto());
 
                 btn_r_photo.setOnClickListener(view -> {
-                        if (id == null || id == ""){
-                                //linearLayout_image_btn.setVisibility(View.GONE);
-                        }else {
-                                mfirestore.collection("Eventos").document(id).get().addOnSuccessListener(documentSnapshot -> {
-                                        String photoPet = documentSnapshot.getString("photo");
-                                        HashMap<String, Object> map = new HashMap<>();
-                                        map.put("photo", "");
-                                        mfirestore.collection("pet").document(idd).update(map);
-                                        Toast.makeText(Create_Event_Activity.this,
-                                                "Foto eliminada", Toast.LENGTH_SHORT).show();
-                                }).addOnFailureListener(e ->
-                                        Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show());
+                  if (id == null || id == ""){
+                    photo_pet.setImageResource(R.drawable.ic_image);
+                    if(!TextUtils.isEmpty(download_uri1)){
+                        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(download_uri1);
+                        storageRef.delete().addOnSuccessListener(aVoid ->
+                                Toast.makeText(getApplicationContext(), "exitoso", Toast.LENGTH_SHORT).show())
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(getApplicationContext(), "fallido", Toast.LENGTH_SHORT).show();
+                        });
+                    }
+                  }else {
+                    mfirestore.collection("Eventos").document(id).get().addOnSuccessListener(documentSnapshot -> {
+                        String photoPet = documentSnapshot.getString("photo");
+                        photo_pet.setImageResource(R.drawable.ic_image);
+                        if(!TextUtils.isEmpty(photoPet)){
+                           StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(photoPet);
+                           storageRef.delete().addOnSuccessListener(aVoid -> {
+                               HashMap<String, Object> map = new HashMap<>();
+                               map.put("photo", "");
+                               mfirestore.collection("Eventos").document(id).update(map);
+                               Toast.makeText(Create_Event_Activity.this, "Foto eliminada", Toast.LENGTH_SHORT).show();
+                           }).addOnFailureListener(e -> {
+                               Toast.makeText(getApplicationContext(), "fallido", Toast.LENGTH_SHORT).show();
+                           });
                         }
+
+                    }).addOnFailureListener(e ->
+                       Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show());
+                  }
                 });
 
                 if (id == null || id == ""){
@@ -342,8 +358,6 @@ public class Create_Event_Activity extends AppCompatActivity implements
                    }catch (Exception e){
                            Log.v("Error", "e: " + e);
                    }
-
-
            }).addOnFailureListener(e ->
                   Toast.makeText(getApplicationContext(), "Error al obtener los datos", Toast.LENGTH_SHORT).show());
         }
@@ -414,6 +428,7 @@ public class Create_Event_Activity extends AppCompatActivity implements
         // [START maps_check_location_permission_result]
         @Override
         public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+
         @NonNull int[] grantResults) {
                 if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
                         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
