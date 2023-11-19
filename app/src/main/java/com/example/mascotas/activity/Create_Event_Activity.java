@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -101,7 +102,12 @@ public class Create_Event_Activity extends AppCompatActivity implements
                 mAuth = FirebaseAuth.getInstance();
                 storageReference = FirebaseStorage.getInstance().getReference();
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-                mapFragment.getMapAsync(this);
+
+                if(mapFragment != null){
+                    mapFragment.getMapAsync(this);
+                } else {
+                    Toast.makeText(this,"El map es null",Toast.LENGTH_LONG).show();
+                }
 
                 linearLayout_image_btn = findViewById(R.id.images_btn);
                 dateButton = findViewById(R.id.datePickerButton);

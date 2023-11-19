@@ -21,14 +21,16 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-        android:layout_width="match_parent"
-        android:layout_height="550dp"
+        android:layout_width="360dp"
+        android:layout_height="450dp"
+        android:layout_marginBottom="80dp"
         android:background="@color/white"
         app:cardCornerRadius="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        tools:layout_editor_absoluteX="0dp">
+        app:layout_constraintVertical_bias="1.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -48,22 +50,23 @@
 
             <Button
                 android:id="@+id/botonIrRegistro"
-                android:layout_width="350dp"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
+                android:background="@drawable/boton_con_borde"
                 android:backgroundTint="#281101"
                 android:text="@string/registro"
                 android:textColor="#ffffff"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.491"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/botonIngresar" />
 
             <Button
                 android:id="@+id/botonIngresar"
-                android:layout_width="350dp"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="52dp"
+                android:background="@drawable/boton_con_borde"
                 android:backgroundTint="#281101"
                 android:text="@string/ingresar"
                 android:textColor="#ffffff"
@@ -73,7 +76,7 @@
 
             <EditText
                 android:id="@+id/editTextPassword"
-                android:layout_width="350dp"
+                android:layout_width="300dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="44dp"
                 android:autofillHints=""
@@ -86,9 +89,9 @@
 
             <EditText
                 android:id="@+id/editTextEmail"
-                android:layout_width="350dp"
+                android:layout_width="300dp"
                 android:layout_height="50dp"
-                android:layout_marginTop="44dp"
+                android:layout_marginTop="30dp"
                 android:autofillHints=""
                 android:ems="10"
                 android:hint="@string/email"
@@ -102,7 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="10dp"
                 android:fontFamily="sans-serif-medium"
                 android:text="@string/titulologin"
                 android:textSize="35sp"

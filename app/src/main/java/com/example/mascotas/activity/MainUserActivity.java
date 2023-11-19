@@ -46,6 +46,7 @@ public class MainUserActivity extends AppCompatActivity {
         btn_add.setVisibility(View.GONE);
         btn_exit.setWidth(400);
         btn_exit.setGravity(View.TEXT_ALIGNMENT_CENTER);
+        btn_exit.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         btn_add.setOnClickListener(v -> {
             Intent intent = new Intent(MainUserActivity.this, Create_Event_Activity.class);
