@@ -84,6 +84,8 @@ public class UserEventAdapter extends FirestoreRecyclerAdapter<Eventos,UserEvent
 
             btn_delete.setVisibility(View.GONE);
 
+            btn_edit.setImageResource(R.drawable.ic_details);
+
         }
     }
 }

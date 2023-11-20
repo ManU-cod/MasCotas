@@ -73,6 +73,7 @@ public class DetailsUserActivity extends AppCompatActivity implements
             int eventCost  = Math.toIntExact(documentSnapshot.getLong("costo"));
 
             int eventinscriptos = Integer.parseInt(String.valueOf(documentSnapshot.getLong("inscriptos")));
+            int eventCups = Integer.parseInt(String.valueOf(documentSnapshot.getLong("cupo")));
 
             String idUser = mAuth.getCurrentUser().getUid();
 
@@ -93,6 +94,7 @@ public class DetailsUserActivity extends AppCompatActivity implements
             HashMap<String, Object> maps = new HashMap<>();
 
             maps.put("inscriptos", eventinscriptos + 1);
+            maps.put("cupo",eventCups - eventinscriptos);
 
             mfirestore.collection("Eventos").document(id).update(maps);
 
