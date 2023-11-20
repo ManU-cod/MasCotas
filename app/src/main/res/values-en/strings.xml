@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name" translatable="false">MasCotas</string>
+    <string name="titulologin">SIGN IN</string>
+    <string name="tituloRegistro">SIGN UP</string>
+    <string name="email">Email</string>
+    <string name="ingresar">Sign In</string>
+    <string name="registro">SIGN Up</string>
+    <string name="contraseña">Password</string>
+    <string name="recuperarContraseña">¿Forgot your password?</string>
+    <string name="noestaRegistrado">¿Not registered yet?</string>
+    <string name="yaTieneCuenta">¿Already registered?</string>
+    <string name="toast1">Must fill all fields</string>
+    <string name="toast2">Sign in successfully</string>
+    <string name="toast3">Cant sign in successfully</string>
+    <string name="toast15">Se envio un mail para reestablecer contraseña</string>
+    <string name="toast16">Se envio un mail para reestablecer contraseña</string>
+    <string name="toast17">Error, no se puede reestablecer</string>
+    <string name="espere_por_favor">Wait a momento please</string>
+    <string name="toast_debe">Must sign in</string>
+
+
+    <string name="Titulo">Title</string>
+    <string name="Creador">Creator</string>
+    <string name="Fecha">Date</string>
+    <string name="Hora">Hour</string>
+    <string name="Descripcion">Description</string>
+    <string name="Localizacion">Location</string>
+    <string name="Cupo">Cup</string>
+    <string name="Inscripto">Signed up</string>
+    <string name="Costo">Cost</string>
+
+    <!--    Permissions    -->
+    <string name="permission_rationale_location">Se requiere acceso al servicio de ubicación para demostrar la función \'mi ubicación\', que muestra su ubicación actual en el mapa.</string>
+    <string name="location_permission_denied">Este ejemplo requiere permiso de ubicación para habilitar la capa \'mi ubicación\'. Inténtelo de nuevo y conceda acceso para usar la ubicación el permiso se ha denegado permanentemente, se puede habilitar desde Configuración del sistema Aplicaciones  \'Demostraciones de la API de Google Maps\'</string>
+    <string name="permission_required_toast">Se requieren permisos de localizacion para esta demo </string>
+    <string name="title_activity_main_turnos">Main_Turnos_Activity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="nombre">Name</string>
+    <string name="apellido">Surname</string>
+
+</resources>

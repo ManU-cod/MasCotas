@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -18,7 +17,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -228,9 +226,6 @@ public class Create_Event_Activity extends AppCompatActivity implements
                     Toast.makeText(getApplicationContext(), "Error al obtener los datos", Toast.LENGTH_SHORT).show());
         }
 
-
-
-
         private void uploadPhoto() {
                 Intent i = new Intent(Intent.ACTION_PICK);
                 i.setType("image/*");
@@ -299,9 +294,6 @@ public class Create_Event_Activity extends AppCompatActivity implements
                 }
 
         }
-
-
-
 
         private void  updatePet(String eventTitle,String eventCreator,String eventDescription, String id) {
                 int eventCost = Integer.parseInt(costo.getText().toString());
@@ -403,8 +395,6 @@ public class Create_Event_Activity extends AppCompatActivity implements
            }).addOnFailureListener(e ->
                   Toast.makeText(getApplicationContext(), "Error al obtener los datos", Toast.LENGTH_SHORT).show());
         }
-
-
 
         @Override
         public boolean onSupportNavigateUp() {

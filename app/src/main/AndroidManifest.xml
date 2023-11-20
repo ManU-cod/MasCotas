@@ -16,17 +16,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Material3.Light"
-        tools:targetApi="31">
-        <activity
-            android:name=".activity.Read_Turno_Activity"
-            android:exported="false" />
-        <activity
-            android:name=".activity.Main_Turno_Activity"
-            android:exported="false" />
+        tools:targetApi="34">
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyC_mMiNrIomyEFuxC4RQ2z4bOAWo5vF5fU" />
+
+        <activity
+            android:name=".activity.Read_Turno_Activity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activity.Main_Turno_Activity"
+            android:exported="false" />
 
         <activity
             android:name=".activity.SplashActivity"
@@ -42,6 +44,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
         <activity
             android:name=".activity.RegisterActivity"
             android:exported="true"
@@ -50,6 +53,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
         <activity
             android:name=".activity.LoginActivity"
             android:exported="true"
@@ -58,6 +62,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
         <activity
             android:name=".activity.MainUserActivity"
             android:exported="true">
@@ -65,19 +70,19 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <activity
-            android:name=".activity.MasterActivity"
-            android:exported="true">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+
         <activity
             android:name=".activity.Main_admin_Activity"
             android:exported="false" />
+
         <activity
             android:name=".activity.Create_Event_Activity"
             android:exported="false" />
+
+        <activity
+            android:name=".activity.DetailsUserActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

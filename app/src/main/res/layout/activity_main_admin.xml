@@ -50,13 +50,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/red"
-                android:text="cerrar sesión"
+                android:text="Cerrar Sesión"
                 android:textSize="15sp"
                 app:cornerRadius="50dp" />
-
-            <Space
-                android:layout_width="15dp"
-                android:layout_height="wrap_content" />
 
             <Button
                 android:id="@+id/btn_add"

@@ -2,7 +2,7 @@
     <string name="app_name" translatable="false">MasCotas</string>
     <string name="titulologin">INGRESO</string>
     <string name="tituloRegistro">REGISTRO</string>
-    <string name="email">Email</string>
+    <string name="email">Correo</string>
     <string name="ingresar">Ingresar</string>
     <string name="registro">Registrarse</string>
     <string name="contraseña">Contraseña</string>
@@ -34,13 +34,15 @@
     <string name="location_permission_denied">Este ejemplo requiere permiso de ubicación para habilitar la capa \'mi ubicación\'. Inténtelo de nuevo y conceda acceso para usar la ubicación el permiso se ha denegado permanentemente, se puede habilitar desde Configuración del sistema Aplicaciones  \'Demostraciones de la API de Google Maps\'</string>
     <string name="permission_required_toast">Se requieren permisos de localizacion para esta demo </string>
     <string name="title_activity_main_turnos">Main_Turnos_Activity</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
+    <string name="prompt_email">Correo</string>
+    <string name="prompt_password">contraseña</string>
+    <string name="action_sign_in">Iniciar o Registrarse</string>
+    <string name="action_sign_in_short">Iniciar sesion</string>
+    <string name="welcome">"Bienvenido !"</string>
+    <string name="invalid_username">Usuario no valido</string>
     <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
+    <string name="login_failed">"Fallo inicio de sesion"</string>
+    <string name="nombre">Nombre</string>
+    <string name="apellido">Apellido</string>
 
 </resources>

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mascotas.R;
 import com.example.mascotas.adapter.EventAdapter;
+import com.example.mascotas.adapter.UserEventAdapter;
 import com.example.mascotas.model.Eventos;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,7 +24,7 @@ import com.google.firebase.firestore.Query;
 public class MainUserActivity extends AppCompatActivity {
 
     Button btn_add,btn_exit;
-    EventAdapter mAdapter;
+    UserEventAdapter mAdapter;
     RecyclerView mRecycler;
     FirebaseFirestore mFirestore;
     FirebaseAuth mAuth;
@@ -44,12 +45,14 @@ public class MainUserActivity extends AppCompatActivity {
         btn_exit = findViewById(R.id.btn_close);
 
         btn_add.setVisibility(View.GONE);
-        btn_exit.setWidth(400);
+        btn_exit.setWidth(420);
         btn_exit.setGravity(View.TEXT_ALIGNMENT_CENTER);
         btn_exit.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
+        setUpRecyclerView();
+
         btn_add.setOnClickListener(v -> {
-            Intent intent = new Intent(MainUserActivity.this, Create_Event_Activity.class);
+            Intent intent = new Intent(MainUserActivity.this, DetailsUserActivity.class);
             startActivity(intent);
         });
 
@@ -59,7 +62,6 @@ public class MainUserActivity extends AppCompatActivity {
             startActivity(new Intent(MainUserActivity.this, LoginActivity.class));
         });
 
-        setUpRecyclerView();
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -69,7 +71,7 @@ public class MainUserActivity extends AppCompatActivity {
         query = mFirestore.collection("Eventos");
         FirestoreRecyclerOptions<Eventos> firestoreRecyclerOptions =
                 new FirestoreRecyclerOptions.Builder<Eventos>().setQuery(query, Eventos.class).build();
-        mAdapter = new EventAdapter(firestoreRecyclerOptions, this);
+        mAdapter = new UserEventAdapter(firestoreRecyclerOptions, this);
         mAdapter.notifyDataSetChanged();
         mRecycler.setAdapter(mAdapter);
     }
@@ -94,7 +96,7 @@ public class MainUserActivity extends AppCompatActivity {
                 new FirestoreRecyclerOptions.Builder<Eventos>()
                         .setQuery(query.orderBy("name")
                                 .startAt(s).endAt(s+"~"), Eventos.class).build();
-        mAdapter = new EventAdapter(firestoreRecyclerOptions, this);
+        mAdapter = new UserEventAdapter(firestoreRecyclerOptions, this);
         mAdapter.startListening();
         mRecycler.setAdapter(mAdapter);
     }
