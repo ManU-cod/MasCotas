@@ -22,7 +22,7 @@ import com.google.firebase.firestore.Query;
 
 public class Main_admin_Activity extends AppCompatActivity {
 
-    Button btn_add,btn_exit;
+    Button btn_add,btn_exit, btn_sub;
     EventAdapter mAdapter;
     RecyclerView mRecycler;
     FirebaseFirestore mFirestore;
@@ -42,6 +42,12 @@ public class Main_admin_Activity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         btn_add = findViewById(R.id.btn_add);
         btn_exit = findViewById(R.id.btn_close);
+        btn_sub = findViewById(R.id.btn_sub);
+
+        btn_sub.setOnClickListener(v -> {
+            Intent intent = new Intent(Main_admin_Activity.this, Main_Turno_Activity.class);
+            startActivity(intent);
+        });
 
         btn_add.setOnClickListener(v -> {
             Intent intent = new Intent(Main_admin_Activity.this, Create_Event_Activity.class);

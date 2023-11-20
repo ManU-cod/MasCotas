@@ -39,7 +39,7 @@
                     android:id="@+id/pet_photo"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:backgroundTint="@color/azul"
+                    android:backgroundTint="#3F6BF1"
                     app:srcCompat="@drawable/ic_image" />
 
             </androidx.cardview.widget.CardView>
@@ -54,7 +54,7 @@
                     android:id="@+id/btn_photo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/azul"
+                    android:backgroundTint="#3F6BF1"
                     android:drawableLeft="@drawable/ic_edit"
                     android:text="Foto"
                     android:textSize="16sp"/>
@@ -187,9 +187,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             map:cameraZoom="10"
-            map:uiRotateGestures="true"
-            map:uiZoomControls="true"
-            tools:layout="@layout/activity_create_event" />
+            map:uiRotateGestures="true"/>
 
         <TextView
             android:id="@+id/textView7"
@@ -233,6 +231,16 @@
             android:layout_marginBottom="35sp"
             android:backgroundTint="@color/color"
             android:text="Enviar"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btn_Turno"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="35sp"
+            android:backgroundTint="@color/color"
+            android:text="Turno"
             android:textSize="20sp" />
 
     </LinearLayout>
