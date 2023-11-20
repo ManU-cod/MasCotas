@@ -23,7 +23,7 @@ import com.google.firebase.firestore.Query;
 
 public class MainUserActivity extends AppCompatActivity {
 
-    Button btn_add,btn_exit;
+    Button btn_add,btn_exit,btn_sub;
     UserEventAdapter mAdapter;
     RecyclerView mRecycler;
     FirebaseFirestore mFirestore;
@@ -43,6 +43,9 @@ public class MainUserActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         btn_add = findViewById(R.id.btn_add);
         btn_exit = findViewById(R.id.btn_close);
+        btn_sub = findViewById(R.id.btn_sub);
+        int color = ContextCompat.getColor(this,R.color.azul);
+        btn_sub.setBackgroundColor(color);
 
         btn_add.setVisibility(View.GONE);
         btn_exit.setWidth(420);
@@ -60,6 +63,14 @@ public class MainUserActivity extends AppCompatActivity {
             mAuth.signOut();
             finish();
             startActivity(new Intent(MainUserActivity.this, LoginActivity.class));
+        });
+
+        btn_sub.setOnClickListener(v->
+        {
+            //IR A LA PANTALLA DE TURNOS DEL USUARIO
+            Intent intent = new Intent(MainUserActivity.this, Main_Turno_Activity.class);
+            startActivity(intent);
+
         });
 
     }

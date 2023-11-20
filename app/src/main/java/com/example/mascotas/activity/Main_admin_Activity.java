@@ -43,6 +43,7 @@ public class Main_admin_Activity extends AppCompatActivity {
         btn_add = findViewById(R.id.btn_add);
         btn_exit = findViewById(R.id.btn_close);
         btn_sub = findViewById(R.id.btn_sub);
+        btn_sub.setVisibility(View.GONE);
 
         btn_sub.setOnClickListener(v -> {
             Intent intent = new Intent(Main_admin_Activity.this, Main_Turno_Activity.class);

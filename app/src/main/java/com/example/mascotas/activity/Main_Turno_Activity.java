@@ -59,7 +59,7 @@ public class Main_Turno_Activity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
-        Intent intent = new Intent(getApplicationContext(), Main_admin_Activity.class);
+        Intent intent = new Intent(getApplicationContext(), MainUserActivity.class);
         startActivity(intent);
         return true;
     }
