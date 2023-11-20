@@ -25,6 +25,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -45,7 +47,6 @@ public class EventAdapter extends FirestoreRecyclerAdapter<Eventos,EventAdapter.
         final String id = documentSnapshot.getId();
 
         holder.titulo.setText(Eventos.getTitulo());
-        //holder.cupo.setText(Integer.toString(Eventos.getCupo()));
         holder.estado.setText(Eventos.getEstado());
 
         String photoPet = Eventos.getPhoto();
@@ -68,17 +69,23 @@ public class EventAdapter extends FirestoreRecyclerAdapter<Eventos,EventAdapter.
     }
 
     private void deleteEventos(String id) {
-        mFirestore.collection("Eventos").document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Toast.makeText(activity, "Eliminado correctamente", Toast.LENGTH_SHORT).show();
+        mFirestore.collection("Eventos").document(id).delete().addOnSuccessListener(unused ->
+                Toast.makeText(activity, "Eliminado correctamente", Toast.LENGTH_SHORT).show())
+        .addOnFailureListener(e ->
+                Toast.makeText(activity, "Error al eliminar", Toast.LENGTH_SHORT).show());
+
+        Query query = mFirestore.collection("Turnos").whereEqualTo("id", id);
+
+        query.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                mFirestore.collection("Turnos").document(document.getId()).delete()
+                        .addOnSuccessListener(unused ->
+                                Log.d("Delete", "Turno eliminado correctamente"))
+                        .addOnFailureListener(e ->
+                                Log.e("Delete", "Error al eliminar turno", e));
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(activity, "Error al eliminar", Toast.LENGTH_SHORT).show();
-            }
-        });
+        }).addOnFailureListener(e ->
+                Log.e("Query", "Error al ejecutar la consulta para obtener los turnos del evento", e));
     }
 
     @NonNull

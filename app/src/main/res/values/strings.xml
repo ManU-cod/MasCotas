@@ -33,5 +33,14 @@
     <string name="permission_rationale_location">Se requiere acceso al servicio de ubicación para demostrar la función \'mi ubicación\', que muestra su ubicación actual en el mapa.</string>
     <string name="location_permission_denied">Este ejemplo requiere permiso de ubicación para habilitar la capa \'mi ubicación\'. Inténtelo de nuevo y conceda acceso para usar la ubicación el permiso se ha denegado permanentemente, se puede habilitar desde Configuración del sistema Aplicaciones  \'Demostraciones de la API de Google Maps\'</string>
     <string name="permission_required_toast">Se requieren permisos de localizacion para esta demo </string>
+    <string name="title_activity_main_turnos">Main_Turnos_Activity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
 
 </resources>

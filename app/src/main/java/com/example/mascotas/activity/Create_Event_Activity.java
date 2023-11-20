@@ -71,7 +71,7 @@ public class Create_Event_Activity extends AppCompatActivity implements
 
 
         ImageView photo_pet;
-        Button btn_cu_photo, btn_r_photo;
+        Button btn_cu_photo, btn_r_photo,btn_turno;
         LinearLayout linearLayout_image_btn;
         StorageReference storageReference;
         String storage_path = "Eventos/*";
@@ -116,6 +116,9 @@ public class Create_Event_Activity extends AppCompatActivity implements
                 photo_pet = findViewById(R.id.pet_photo);
                 btn_cu_photo = findViewById(R.id.btn_photo);
                 btn_r_photo = findViewById(R.id.btn_remove_photo);
+
+                btn_turno = findViewById(R.id.btn_Turno);
+                btn_turno.setOnClickListener(view -> CrearTurno(id));
 
                 btn_cu_photo.setOnClickListener(view -> uploadPhoto());
 
@@ -183,6 +186,43 @@ public class Create_Event_Activity extends AppCompatActivity implements
                 });
 
         }
+
+
+
+        private void CrearTurno(String id){
+            mfirestore.collection("Eventos").document(id).get().addOnSuccessListener(documentSnapshot -> {
+                int eventCost  = Math.toIntExact(documentSnapshot.getLong("costo"));
+                int eventinscriptos = Integer.parseInt(String.valueOf(documentSnapshot.getLong("inscriptos")));
+                String idUser = mAuth.getCurrentUser().getUid();
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("userId", idUser);
+                map.put("id", documentSnapshot.getString("id"));
+                map.put("titulo", documentSnapshot.getString("titulo"));
+                //map.put("creador", documentSnapshot.getString("creador"));
+                //map.put("fecha", documentSnapshot.getString("fecha"));
+                //map.put("horario", documentSnapshot.getString("horario"));
+                //map.put("latitud",  documentSnapshot.getString("latitud"));
+                //map.put("longitud",  documentSnapshot.getString("longitud"));
+                //map.put("descripcion", documentSnapshot.getString("descripcion"));
+                map.put("estado", documentSnapshot.getString("estado"));
+                map.put("photo",  documentSnapshot.getString("photo"));
+                //map.put("costo", eventCost);
+
+                HashMap<String, Object> maps = new HashMap<>();
+                maps.put("inscriptos", eventinscriptos + 1);
+                mfirestore.collection("Eventos").document(id).update(maps);
+
+                mfirestore.collection("Turnos").document(idUser).set(map).addOnSuccessListener(documentReference -> {
+                    Toast.makeText(getApplicationContext(), "Creado turno exitosamente", Toast.LENGTH_SHORT).show();
+                }).addOnFailureListener(e ->
+                        Toast.makeText(getApplicationContext(), "Error al ingresar turno", Toast.LENGTH_SHORT).show());
+
+            }).addOnFailureListener(e ->
+                    Toast.makeText(getApplicationContext(), "Error al obtener los datos", Toast.LENGTH_SHORT).show());
+        }
+
+
 
 
         private void uploadPhoto() {
@@ -253,10 +293,6 @@ public class Create_Event_Activity extends AppCompatActivity implements
                 }
 
         }
-
-
-
-
 
 
 
@@ -348,7 +384,7 @@ public class Create_Event_Activity extends AppCompatActivity implements
                    try {
                            if(!photoPet.equals("")){
                                    Toast toast = Toast.makeText(getApplicationContext(), "Cargando foto", Toast.LENGTH_SHORT);
-                                   toast.setGravity(Gravity.TOP,0,200);
+                                   //toast.setGravity(Gravity.TOP,0,200);
                                    toast.show();
                                    Picasso.with(Create_Event_Activity.this)
                                            .load(photoPet)
@@ -361,9 +397,6 @@ public class Create_Event_Activity extends AppCompatActivity implements
            }).addOnFailureListener(e ->
                   Toast.makeText(getApplicationContext(), "Error al obtener los datos", Toast.LENGTH_SHORT).show());
         }
-
-
-
 
 
 
@@ -427,9 +460,7 @@ public class Create_Event_Activity extends AppCompatActivity implements
         }
         // [START maps_check_location_permission_result]
         @Override
-        public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-
-        @NonNull int[] grantResults) {
+        public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
                 if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
                         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
                         return;
