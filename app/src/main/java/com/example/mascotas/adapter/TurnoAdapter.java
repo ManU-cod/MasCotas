@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mascotas.R;
 import com.example.mascotas.activity.Create_Event_Activity;
+import com.example.mascotas.activity.DetailsUserActivity;
+import com.example.mascotas.activity.MainUserActivity;
 import com.example.mascotas.model.Turnos;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -67,10 +69,9 @@ public class TurnoAdapter extends FirestoreRecyclerAdapter<Turnos, TurnoAdapter.
     private void IraDetalles(String id) {
         mFirestore.collection("Turnos").document(id).get().addOnSuccessListener(documentSnapshot ->{
             String eventId = documentSnapshot.getString("id");
-            //Intent i = new Intent(activity, Create_Event_Activity.class);
-            //i.putExtra("id_Turno", eventId);
-            //activity.startActivity(i);
-            Toast.makeText(activity, "Detalles correctamente", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(activity, DetailsUserActivity.class);
+            i.putExtra("id_Event", eventId);
+            activity.startActivity(i);
         });
     }
 

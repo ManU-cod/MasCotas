@@ -1,6 +1,8 @@
 package com.example.mascotas.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -60,7 +62,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.color));
         // Usar un Handler para retrasar la transición a la actividad principal
         new Handler().postDelayed(() -> {
 
