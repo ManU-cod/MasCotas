@@ -42,7 +42,7 @@ public class DetailsUserActivity extends AppCompatActivity implements
 
     TextView title,creator,description,time,cost,cup,date;
     Button btn_turno;
-    GoogleMap myMap;
+
 
     int eventinscriptos = 0;
     String txtLatitud,txtLongitud, eventEstado;
@@ -57,14 +57,7 @@ public class DetailsUserActivity extends AppCompatActivity implements
     ImageView photo_pet;
     LinearLayout linearLayout_image_btn;
     StorageReference storageReference;
-    String storage_path = "Eventos/*";
 
-    private static final int COD_SEL_STORAGE = 200;
-    private static final int COD_SEL_IMAGE = 300;
-    private Uri image_url;
-    String photo = "photo";
-    String idd;
-    String download_uri1;
 
 
 
@@ -72,14 +65,12 @@ public class DetailsUserActivity extends AppCompatActivity implements
 
         mfirestore.collection("Turnos").document(mAuth.getCurrentUser().getUid()).get().addOnSuccessListener(snap->
         {
-            if(!snap.getString("id").equalsIgnoreCase(id.toLowerCase()))
+            if(!snap.getString("id").equalsIgnoreCase(id))
             {
 
                 mfirestore.collection("Eventos").document(id).get().addOnSuccessListener(documentSnapshot -> {
 
                     String idUser = mAuth.getCurrentUser().getUid();
-
-                    int eventCost = Math.toIntExact(documentSnapshot.getLong("costo"));
 
                     int eventinscriptos = Integer.parseInt(String.valueOf(documentSnapshot.getLong("inscriptos")));
 
@@ -90,15 +81,11 @@ public class DetailsUserActivity extends AppCompatActivity implements
                     map.put("userId", idUser);
                     map.put("id", documentSnapshot.getString("id"));
                     map.put("titulo", documentSnapshot.getString("titulo"));
-                    //map.put("creador", documentSnapshot.getString("creador"));
                     map.put("fecha", documentSnapshot.getString("fecha"));
                     map.put("horario", documentSnapshot.getString("horario"));
-                    //map.put("latitud",  documentSnapshot.getString("latitud"));
-                    //map.put("longitud",  documentSnapshot.getString("longitud"));
                     map.put("descripcion", documentSnapshot.getString("descripcion"));
                     map.put("estado", documentSnapshot.getString("estado"));
                     map.put("photo", documentSnapshot.getString("photo"));
-                    //map.put("costo", eventCost);
 
                     HashMap<String, Object> maps = new HashMap<>();
 
