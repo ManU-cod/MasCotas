@@ -66,45 +66,61 @@ public class DetailsUserActivity extends AppCompatActivity implements
     String idd;
     String download_uri1;
 
+
+
     private void CreateTurn(String id){
 
-        mfirestore.collection("Eventos").document(id).get().addOnSuccessListener(documentSnapshot -> {
+        mfirestore.collection("Turnos").document(mAuth.getCurrentUser().getUid()).get().addOnSuccessListener(snap->
+        {
+            if(!snap.getString("id").equalsIgnoreCase(id.toLowerCase()))
+            {
 
-            int eventCost  = Math.toIntExact(documentSnapshot.getLong("costo"));
+                mfirestore.collection("Eventos").document(id).get().addOnSuccessListener(documentSnapshot -> {
 
-            int eventinscriptos = Integer.parseInt(String.valueOf(documentSnapshot.getLong("inscriptos")));
-            int eventCups = Integer.parseInt(String.valueOf(documentSnapshot.getLong("cupo")));
+                    String idUser = mAuth.getCurrentUser().getUid();
 
-            String idUser = mAuth.getCurrentUser().getUid();
+                    int eventCost = Math.toIntExact(documentSnapshot.getLong("costo"));
 
-            Map<String, Object> map = new HashMap<>();
-            map.put("userId", idUser);
-            map.put("id", documentSnapshot.getString("id"));
-            map.put("titulo", documentSnapshot.getString("titulo"));
-            //map.put("creador", documentSnapshot.getString("creador"));
-            map.put("fecha", documentSnapshot.getString("fecha"));
-            map.put("horario", documentSnapshot.getString("horario"));
-            //map.put("latitud",  documentSnapshot.getString("latitud"));
-            //map.put("longitud",  documentSnapshot.getString("longitud"));
-            map.put("descripcion", documentSnapshot.getString("descripcion"));
-            map.put("estado", documentSnapshot.getString("estado"));
-            map.put("photo",  documentSnapshot.getString("photo"));
-            //map.put("costo", eventCost);
+                    int eventinscriptos = Integer.parseInt(String.valueOf(documentSnapshot.getLong("inscriptos")));
 
-            HashMap<String, Object> maps = new HashMap<>();
+                    int eventCups = Integer.parseInt(String.valueOf(documentSnapshot.getLong("cupo")));
 
-            maps.put("inscriptos", eventinscriptos + 1);
-            maps.put("cupo",eventCups - eventinscriptos);
 
-            mfirestore.collection("Eventos").document(id).update(maps);
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("userId", idUser);
+                    map.put("id", documentSnapshot.getString("id"));
+                    map.put("titulo", documentSnapshot.getString("titulo"));
+                    //map.put("creador", documentSnapshot.getString("creador"));
+                    map.put("fecha", documentSnapshot.getString("fecha"));
+                    map.put("horario", documentSnapshot.getString("horario"));
+                    //map.put("latitud",  documentSnapshot.getString("latitud"));
+                    //map.put("longitud",  documentSnapshot.getString("longitud"));
+                    map.put("descripcion", documentSnapshot.getString("descripcion"));
+                    map.put("estado", documentSnapshot.getString("estado"));
+                    map.put("photo", documentSnapshot.getString("photo"));
+                    //map.put("costo", eventCost);
 
-            mfirestore.collection("Turnos").document(idUser).set(map).addOnSuccessListener(documentReference -> {
-                Toast.makeText(getApplicationContext(), "Creado turno exitosamente", Toast.LENGTH_SHORT).show();
-            }).addOnFailureListener(e ->
-                    Toast.makeText(getApplicationContext(), "Error al ingresar turno", Toast.LENGTH_SHORT).show());
+                    HashMap<String, Object> maps = new HashMap<>();
 
-        }).addOnFailureListener(e ->
-                Toast.makeText(getApplicationContext(), "Error al obtener los datos", Toast.LENGTH_SHORT).show());
+                    maps.put("inscriptos", eventinscriptos + 1);
+                    maps.put("cupo", eventCups - 1);
+
+                    mfirestore.collection("Eventos").document(id).update(maps);
+
+                    mfirestore.collection("Turnos").document(idUser).set(map).addOnSuccessListener(documentReference -> {
+                        Toast.makeText(getApplicationContext(), "Creado turno exitosamente", Toast.LENGTH_SHORT).show();
+                    }).addOnFailureListener(e ->
+                            Toast.makeText(getApplicationContext(), "Error al ingresar turno", Toast.LENGTH_SHORT).show());
+
+                }).addOnFailureListener(e ->
+                        Toast.makeText(getApplicationContext(), "Error al obtener los datos", Toast.LENGTH_SHORT).show());
+
+            }
+            else {
+                Toast.makeText(getApplicationContext(),"Ya esta registrado",Toast.LENGTH_SHORT).show();
+            }
+
+        });
     }
 
     private void getEvent(String id){
@@ -168,8 +184,7 @@ public class DetailsUserActivity extends AppCompatActivity implements
         return true;
     }
 
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_details);
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.color));
