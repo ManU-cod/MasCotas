@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.example.mascotas.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -65,6 +66,8 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.color));
+
         Button btnRegistrarse = findViewById(R.id.botonRegistrarse);
         edMail = findViewById(R.id.editTextEmail);
         edPass = findViewById(R.id.editTextPassword);

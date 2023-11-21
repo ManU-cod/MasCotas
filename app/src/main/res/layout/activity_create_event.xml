@@ -233,16 +233,6 @@
             android:text="Enviar"
             android:textSize="20sp" />
 
-        <Button
-            android:id="@+id/btn_Turno"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="35sp"
-            android:backgroundTint="@color/color"
-            android:text="Turno"
-            android:textSize="20sp" />
-
     </LinearLayout>
 
 </ScrollView>

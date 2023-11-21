@@ -121,110 +121,73 @@ public class Create_Event_Activity extends AppCompatActivity implements
                 btn_cu_photo = findViewById(R.id.btn_photo);
                 btn_r_photo = findViewById(R.id.btn_remove_photo);
 
-                btn_turno = findViewById(R.id.btn_Turno);
-                btn_turno.setOnClickListener(view -> CrearTurno(id));
-
                 btn_cu_photo.setOnClickListener(view -> uploadPhoto());
+                btn_r_photo.setOnClickListener(view -> deletePhoto(id));
+                btn_send.setOnClickListener(view -> uploadSend(id));
 
-                btn_r_photo.setOnClickListener(view -> {
-                  if (id == null || id == ""){
+                if (!TextUtils.isEmpty(id)){
+                    idd = id;
+                    btn_send.setText("Resubir");
+                    getEvent(id);
+                }
+        }
+
+
+        public void deletePhoto(String id) {
+            if (id == null || id == ""){
+                photo_pet.setImageResource(R.drawable.ic_image);
+                if(!TextUtils.isEmpty(download_uri1)){
+                    StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(download_uri1);
+                    storageRef.delete().addOnSuccessListener(aVoid ->
+                        Toast.makeText(getApplicationContext(), "exitoso", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(getApplicationContext(), "fallido", Toast.LENGTH_SHORT).show();
+                    });
+                }
+            }else {
+                mfirestore.collection("Eventos").document(id).get().addOnSuccessListener(documentSnapshot -> {
+                    String photoPet = documentSnapshot.getString("photo");
                     photo_pet.setImageResource(R.drawable.ic_image);
-                    if(!TextUtils.isEmpty(download_uri1)){
-                        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(download_uri1);
-                        storageRef.delete().addOnSuccessListener(aVoid ->
-                                Toast.makeText(getApplicationContext(), "exitoso", Toast.LENGTH_SHORT).show())
-                        .addOnFailureListener(e -> {
+                    if(!TextUtils.isEmpty(photoPet)){
+                        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(photoPet);
+                        storageRef.delete().addOnSuccessListener(aVoid -> {
+                            HashMap<String, Object> map = new HashMap<>();
+                            map.put("photo", "");
+                            mfirestore.collection("Eventos").document(id).update(map);
+                            Toast.makeText(Create_Event_Activity.this, "Foto eliminada", Toast.LENGTH_SHORT).show();
+                        }).addOnFailureListener(e -> {
                             Toast.makeText(getApplicationContext(), "fallido", Toast.LENGTH_SHORT).show();
                         });
                     }
-                  }else {
-                    mfirestore.collection("Eventos").document(id).get().addOnSuccessListener(documentSnapshot -> {
-                        String photoPet = documentSnapshot.getString("photo");
-                        photo_pet.setImageResource(R.drawable.ic_image);
-                        if(!TextUtils.isEmpty(photoPet)){
-                           StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(photoPet);
-                           storageRef.delete().addOnSuccessListener(aVoid -> {
-                               HashMap<String, Object> map = new HashMap<>();
-                               map.put("photo", "");
-                               mfirestore.collection("Eventos").document(id).update(map);
-                               Toast.makeText(Create_Event_Activity.this, "Foto eliminada", Toast.LENGTH_SHORT).show();
-                           }).addOnFailureListener(e -> {
-                               Toast.makeText(getApplicationContext(), "fallido", Toast.LENGTH_SHORT).show();
-                           });
-                        }
 
-                    }).addOnFailureListener(e ->
-                       Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show());
-                  }
-                });
-
-                if (id == null || id == ""){
-                       //linearLayout_image_btn.setVisibility(View.GONE);
-                }else{
-                        idd = id;
-                        btn_send.setText("Resubir");
-                        getEvent(id);
-                }
-                btn_send.setOnClickListener(view -> {
-                        String eventTitle = titulo.getText().toString().trim();
-                        String eventCreator = creador.getText().toString().trim();
-                        String eventDescription = descripcion.getText().toString().trim();
-                        String eventCost = costo.getText().toString().trim();
-                        String eventCapacity = cupo.getText().toString().trim();
-
-                        if (TextUtils.isEmpty(eventTitle) || TextUtils.isEmpty(eventCreator) ||
-                                TextUtils.isEmpty(eventDescription) || TextUtils.isEmpty(eventCapacity)
-                                || TextUtils.isEmpty(eventCost) || TextUtils.isEmpty(txtLatitud) || TextUtils.isEmpty(fecha) ) {
-                                // If any field is empty, show a Toast message
-                                Toast.makeText(Create_Event_Activity.this,
-                                        "Por favor rellena todos los campos", Toast.LENGTH_SHORT).show();
-                        } else {
-                                if (id == null || id == "") {
-                                        // Publicar nuevo evento
-                                        postEvent(eventTitle, eventCreator, eventDescription);
-                                } else {
-                                        // Actualizar evento existente
-                                        updatePet(eventTitle, eventCreator, eventDescription, id);
-                                }
-                        }
-                });
-
-        }
-
-
-
-        private void CrearTurno(String id){
-            mfirestore.collection("Eventos").document(id).get().addOnSuccessListener(documentSnapshot -> {
-                int eventCost  = Math.toIntExact(documentSnapshot.getLong("costo"));
-                int eventinscriptos = Integer.parseInt(String.valueOf(documentSnapshot.getLong("inscriptos")));
-                String idUser = mAuth.getCurrentUser().getUid();
-
-                Map<String, Object> map = new HashMap<>();
-                map.put("userId", idUser);
-                map.put("id", documentSnapshot.getString("id"));
-                map.put("titulo", documentSnapshot.getString("titulo"));
-                //map.put("creador", documentSnapshot.getString("creador"));
-                //map.put("fecha", documentSnapshot.getString("fecha"));
-                //map.put("horario", documentSnapshot.getString("horario"));
-                //map.put("latitud",  documentSnapshot.getString("latitud"));
-                //map.put("longitud",  documentSnapshot.getString("longitud"));
-                //map.put("descripcion", documentSnapshot.getString("descripcion"));
-                map.put("estado", documentSnapshot.getString("estado"));
-                map.put("photo",  documentSnapshot.getString("photo"));
-                //map.put("costo", eventCost);
-
-                HashMap<String, Object> maps = new HashMap<>();
-                maps.put("inscriptos", eventinscriptos + 1);
-                mfirestore.collection("Eventos").document(id).update(maps);
-
-                mfirestore.collection("Turnos").document(idUser).set(map).addOnSuccessListener(documentReference -> {
-                    Toast.makeText(getApplicationContext(), "Creado turno exitosamente", Toast.LENGTH_SHORT).show();
                 }).addOnFailureListener(e ->
-                        Toast.makeText(getApplicationContext(), "Error al ingresar turno", Toast.LENGTH_SHORT).show());
-
-            }).addOnFailureListener(e ->
-                    Toast.makeText(getApplicationContext(), "Error al obtener los datos", Toast.LENGTH_SHORT).show());
+                        Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show());
+            }
         }
+
+        private void uploadSend(String id) {
+            String eventTitle = titulo.getText().toString().trim();
+            String eventCreator = creador.getText().toString().trim();
+            String eventDescription = descripcion.getText().toString().trim();
+            String eventCost = costo.getText().toString().trim();
+            String eventCapacity = cupo.getText().toString().trim();
+
+            if (TextUtils.isEmpty(eventTitle) || TextUtils.isEmpty(eventCreator) ||
+                    TextUtils.isEmpty(eventDescription) || TextUtils.isEmpty(eventCapacity)
+                    || TextUtils.isEmpty(eventCost) || TextUtils.isEmpty(txtLatitud) || TextUtils.isEmpty(fecha) ) {
+                // If any field is empty, show a Toast message
+                Toast.makeText(Create_Event_Activity.this, "Por favor rellena todos los campos", Toast.LENGTH_SHORT).show();
+            } else {
+                if (id == null || id == "") {
+                    // Publicar nuevo evento
+                    postEvent(eventTitle, eventCreator, eventDescription);
+                } else {
+                    // Actualizar evento existente
+                    updatePet(eventTitle, eventCreator, eventDescription, id);
+                }
+            }
+        }
+
 
         private void uploadPhoto() {
                 Intent i = new Intent(Intent.ACTION_PICK);
@@ -245,54 +208,43 @@ public class Create_Event_Activity extends AppCompatActivity implements
         }
 
         private void subirPhoto(Uri image_url) {
-
-                if (idd == null || idd == ""){
-                        progressDialog.setMessage("Actualizando foto");
-                        progressDialog.show();
-                        String rute_storage_photo = storage_path + "" + photo + "" + mAuth.getUid() +""+ idd;
-                        StorageReference reference = storageReference.child(rute_storage_photo);
-                        reference.putFile(image_url).addOnSuccessListener(taskSnapshot -> {
-                                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                                while (!uriTask.isSuccessful());
-                                if (uriTask.isSuccessful()){
-                                        uriTask.addOnSuccessListener(uri -> {
-                                                download_uri1 = uri.toString();
-                                                Picasso.with(getApplicationContext())
-                                                        .load(download_uri1)
-                                                        .resize(150, 150)
-                                                        .into(photo_pet);
-                                                Toast.makeText(Create_Event_Activity.this, "Foto actualizada", Toast.LENGTH_SHORT).show();
-                                                progressDialog.dismiss();
-                                        });
-                                }
-                        }).addOnFailureListener(e -> Toast.makeText(Create_Event_Activity.this,
-                                "Error al cargar foto", Toast.LENGTH_SHORT).show());
-                }else{
-                        progressDialog.setMessage("Actualizando foto");
-                        progressDialog.show();
-                        String rute_storage_photo = storage_path + "" + photo + "" + mAuth.getUid() +""+ idd;
-                        StorageReference reference = storageReference.child(rute_storage_photo);
-                        reference.putFile(image_url).addOnSuccessListener(taskSnapshot -> {
-                                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                                while (!uriTask.isSuccessful());
-                                if (uriTask.isSuccessful()){
-                                        uriTask.addOnSuccessListener(uri -> {
-                                                String download_uri = uri.toString();
-                                                Picasso.with(getApplicationContext())
-                                                        .load(download_uri)
-                                                        .resize(150, 150)
-                                                        .into(photo_pet);
-                                                HashMap<String, Object> map = new HashMap<>();
-                                                map.put("photo", download_uri);
-                                                mfirestore.collection("Eventos").document(idd).update(map);
-                                                Toast.makeText(Create_Event_Activity.this, "Foto actualizada", Toast.LENGTH_SHORT).show();
-                                                progressDialog.dismiss();
-                                        });
-                                }
-                        }).addOnFailureListener(e -> Toast.makeText(Create_Event_Activity.this,
-                                "Error al cargar foto", Toast.LENGTH_SHORT).show());
-                }
-
+            progressDialog.setMessage("Actualizando foto");
+            progressDialog.show();
+            String rute_storage_photo = storage_path + "" + photo + "" + mAuth.getUid() +""+ idd;
+            StorageReference reference = storageReference.child(rute_storage_photo);
+            if (idd == null || idd == ""){
+               reference.putFile(image_url).addOnSuccessListener(taskSnapshot -> {
+                  Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                  while (!uriTask.isSuccessful());
+                         if (uriTask.isSuccessful()){
+                             uriTask.addOnSuccessListener(uri -> {
+                             download_uri1 = uri.toString();
+                             Picasso.with(getApplicationContext()).load(download_uri1).resize(150, 150).into(photo_pet);
+                             Toast.makeText(Create_Event_Activity.this, "Foto actualizada", Toast.LENGTH_SHORT).show();
+                             progressDialog.dismiss();
+                            });
+                        }
+               }).addOnFailureListener(e ->
+                  Toast.makeText(Create_Event_Activity.this, "Error al cargar foto", Toast.LENGTH_SHORT).show());
+            }
+            else{
+               reference.putFile(image_url).addOnSuccessListener(taskSnapshot -> {
+               Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+               while (!uriTask.isSuccessful());
+                  if (uriTask.isSuccessful()){
+                     uriTask.addOnSuccessListener(uri -> {
+                        String download_uri = uri.toString();
+                        Picasso.with(getApplicationContext()).load(download_uri).resize(150, 150).into(photo_pet);
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put("photo", download_uri);
+                        mfirestore.collection("Eventos").document(idd).update(map);
+                        Toast.makeText(Create_Event_Activity.this, "Foto actualizada", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                     });
+                  }
+               }).addOnFailureListener(e ->
+                  Toast.makeText(Create_Event_Activity.this, "Error al cargar foto", Toast.LENGTH_SHORT).show());
+            }
         }
 
         private void  updatePet(String eventTitle,String eventCreator,String eventDescription, String id) {
@@ -367,7 +319,6 @@ public class Create_Event_Activity extends AppCompatActivity implements
               fecha = eventFecha;
               horario =  eventHora;
 
-
               LatLng argentina = new LatLng(Double.parseDouble(txtLatitud), Double.parseDouble(txtLongitud) );
               mMap.addMarker(new MarkerOptions().position(argentina).title(""));
               mMap.moveCamera(CameraUpdateFactory.newLatLng(argentina));
@@ -379,22 +330,23 @@ public class Create_Event_Activity extends AppCompatActivity implements
               descripcion.setText(eventDescription);
               costo.setText(eventCost);
               cupo.setText(eventCapacity);
-                   try {
-                           if(!photoPet.equals("")){
-                                   Toast toast = Toast.makeText(getApplicationContext(), "Cargando foto", Toast.LENGTH_SHORT);
-                                   //toast.setGravity(Gravity.TOP,0,200);
-                                   toast.show();
-                                   Picasso.with(Create_Event_Activity.this)
-                                           .load(photoPet)
-                                           .resize(150, 150)
-                                           .into(photo_pet);
+              try {
+                  if(!photoPet.equals("")){
+                     Toast toast = Toast.makeText(getApplicationContext(), "Cargando foto", Toast.LENGTH_SHORT);
+                     toast.show();
+                     Picasso.with(Create_Event_Activity.this).load(photoPet).resize(150, 150).into(photo_pet);
                            }
-                   }catch (Exception e){
-                           Log.v("Error", "e: " + e);
-                   }
+              }catch (Exception e){
+                  Log.v("Error", "e: " + e);
+              }
            }).addOnFailureListener(e ->
                   Toast.makeText(getApplicationContext(), "Error al obtener los datos", Toast.LENGTH_SHORT).show());
         }
+
+
+
+
+
 
         @Override
         public boolean onSupportNavigateUp() {

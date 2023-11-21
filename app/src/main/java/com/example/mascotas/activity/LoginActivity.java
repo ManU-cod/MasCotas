@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.example.mascotas.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -127,6 +128,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.color));
         btn_registrarse = (Button) findViewById(R.id.botonIrRegistro);
         btn_ingresar = (Button) findViewById(R.id.botonIngresar);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
